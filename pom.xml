@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.grayb</groupId>
-	<artifactId>maintanence-request-server</artifactId>
+	<artifactId>maintenance-request-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>maintanence-request-server</name>
+	<name>maintenance-request-server</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
