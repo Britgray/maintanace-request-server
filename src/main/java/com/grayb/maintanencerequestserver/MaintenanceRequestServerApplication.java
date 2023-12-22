@@ -1,4 +1,4 @@
-package com.grayb.maintenancerequestserver;
+package com.grayb.maintanencerequestserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

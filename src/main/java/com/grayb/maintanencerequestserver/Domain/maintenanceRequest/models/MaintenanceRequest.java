@@ -26,7 +26,7 @@ public class MaintenanceRequest {
 
     private String email;
 
-    private int aptNumber;
+    private Long aptNumber;
 
     private String description;
 

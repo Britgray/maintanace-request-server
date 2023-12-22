@@ -20,53 +20,52 @@ import java.util.Optional;
 
         @Override
         public MaintenanceRequest create(MaintenanceRequest maintenanceRequest) throws ResourceCreationException {
-            Optional<MaintenanceRequest> optional = maintenanceRequestRepo.findByEmail(maintenanceRequest.getEmail());
-            if (optional.isPresent())
+            Optional<MaintenanceRequest> existingRequest = maintenanceRequestRepo.findByEmail(maintenanceRequest.getEmail());
+            if (existingRequest.isPresent()){
                 throw new ResourceCreationException("Maintenance Request with email exists: " + maintenanceRequest.getEmail());
-
-            maintenanceRequest = maintenanceRequestRepo.save(maintenanceRequest);
-            return maintenanceRequest;
+        }
+            return maintenanceRequestRepo.save(maintenanceRequest);
         }
 
         @Override
         public MaintenanceRequest getById(Long id) throws ResourceNotFoundException {
-            MaintenanceRequest maintenanceRequest = maintenanceRequestRepo.findById(id)
+            return maintenanceRequestRepo.findById(id)
                     .orElseThrow(()->new ResourceNotFoundException("No Maintenance Request with id: " + id));
-            return maintenanceRequest;
+
         }
 
         @Override
         public MaintenanceRequest getByEmail(String email) throws ResourceNotFoundException {
-            MaintenanceRequest maintenanceRequest = maintenanceRequestRepo.findByEmail(email)
+            return maintenanceRequestRepo.findByEmail(email)
                     .orElseThrow(()->new ResourceNotFoundException("No Maintenance Request with email: " + email));
-            return maintenanceRequest;
         }
-
         @Override
         public MaintenanceRequest getByFirstName(String firstName) throws ResourceNotFoundException {
-            return null;
+            return maintenanceRequestRepo.findByEmail(firstName)
+                    .orElseThrow(()->new ResourceNotFoundException("No Maintenance Request with first name: " + firstName));
         }
-
         @Override
         public MaintenanceRequest getByLastName(String lastName) throws ResourceNotFoundException {
-            return maintenanceRequest;
+            return maintenanceRequestRepo.findByEmail(lastName)
+                    .orElseThrow(()->new ResourceNotFoundException("No Maintenance Request with last name: " + lastName));
         }
-
         @Override
         public MaintenanceRequest getByDescription(String description) throws ResourceNotFoundException {
-            return maintenanceRequest;
+            return maintenanceRequestRepo.findByEmail(description)
+                    .orElseThrow(()->new ResourceNotFoundException("No Maintenance Request with description: " + description));
         }
-
         @Override
-        public MaintenanceRequest getByAptNumber(int aptNumber) throws ResourceNotFoundException {
-            return maintenanceRequest;
-        }
+        public MaintenanceRequest getByAptNumber(Long aptNumber) throws ResourceNotFoundException {
+            return maintenanceRequestRepo.findById(aptNumber)
+                    .orElseThrow(()->new ResourceNotFoundException("No Maintenance Request with apt number: " + aptNumber));
 
+        }
         @Override
-        public MaintenanceRequest getByCreateAt(LocalDate createAt) throws ResourceNotFoundException {
-            return maintenanceRequest;
-        }
+        public MaintenanceRequest getByCreateAt(LocalDate localDate) throws ResourceNotFoundException {
+            return maintenanceRequestRepo.findByCreateAt(localDate)
+                    .orElseThrow(()->new ResourceNotFoundException("No Maintenance Request with creation date " + localDate));
 
+        }
         @Override
         public List<MaintenanceRequest> getAll() {
             return maintenanceRequestRepo.findAll();
@@ -78,12 +77,12 @@ import java.util.Optional;
             maintenanceRequest.setFirstName(maintenanceRequestDetail.getFirstName());
             maintenanceRequest.setLastName(maintenanceRequestDetail.getLastName());
             maintenanceRequest.setEmail(maintenanceRequestDetail.getEmail());
-            maintenanceRequest = maintenanceRequestRepo.save(maintenanceRequest);
-            return maintenanceRequest;
+            return maintenanceRequestRepo.save(maintenanceRequest);
+
         }
 
         @Override
-        public void delete(Long id) {
+        public void delete(Long id) throws ResourceNotFoundException {
             MaintenanceRequest maintenanceRequest = getById(id);
             maintenanceRequestRepo.delete(maintenanceRequest);
         }

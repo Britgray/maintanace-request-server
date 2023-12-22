@@ -1,5 +1,7 @@
 package com.grayb.maintanencerequestserver.Domain.maintenanceRequest.controllers;
 
+import com.grayb.maintanencerequestserver.Domain.core.exceptions.ResourceCreationException;
+import com.grayb.maintanencerequestserver.Domain.core.exceptions.ResourceNotFoundException;
 import com.grayb.maintanencerequestserver.Domain.maintenanceRequest.models.MaintenanceRequest;
 import com.grayb.maintanencerequestserver.Domain.maintenanceRequest.services.MaintenanceRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,33 +31,53 @@ public class MaintenanceRequestController {
 
     @PostMapping
     public ResponseEntity<MaintenanceRequest> create(@RequestBody MaintenanceRequest maintenanceRequest) {
-        maintenanceRequest = MaintenanceRequestService.create(maintenanceRequest);
-        return new ResponseEntity<>(maintenanceRequest, HttpStatus.CREATED);
+        try {
+            maintenanceRequest = maintenanceRequestService.create(maintenanceRequest);
+            return new ResponseEntity<>(maintenanceRequest, HttpStatus.CREATED);
+        } catch (ResourceCreationException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<MaintenanceRequest> getById(@PathVariable("id") Long id) throws ResourceNotFoundException {
-        MaintenanceRequest maintenanceRequest = maintenanceRequestService.getById(id);
-        return new ResponseEntity<>(maintenanceRequest, HttpStatus.OK);
+    public ResponseEntity<MaintenanceRequest> getById(@PathVariable("id") Long id) {
+        try {
+            MaintenanceRequest maintenanceRequest = maintenanceRequestService.getById(id);
+            return new ResponseEntity<>(maintenanceRequest, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
-
     @GetMapping("lookup")
-    public ResponseEntity<MaintenanceRequest> getByEmail(@RequestParam String email) throws ResourceNotFoundException {
-        MaintenanceRequest maintenanceRequest = MaintenanceRequestService.getByEmail(email);
-        return new ResponseEntity<>(maintenanceRequest, HttpStatus.OK);
+    public ResponseEntity<MaintenanceRequest> getByEmail(@RequestParam String email) {
+        try{
+            MaintenanceRequest maintenanceRequest = maintenanceRequestService.getByEmail(email);
+            return new ResponseEntity<>(maintenanceRequest, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            // Handle the exception and return an appropriate response
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<MaintenanceRequest> update(@PathVariable("id") Long id, @RequestBody MaintenanceRequest maintenanceRequestDetail) throws ResourceNotFoundException {
-        maintenanceRequestDetail = MaintenanceRequestService.update(id, maintenanceRequestDetail);
-        return new ResponseEntity<>(maintenanceRequestDetail, HttpStatus.ACCEPTED);
+    public ResponseEntity<MaintenanceRequest> update(@PathVariable("id") Long id, @RequestBody MaintenanceRequest maintenanceRequestDetail) {
+        try {
+            maintenanceRequestDetail = maintenanceRequestService.update(id, maintenanceRequestDetail);
+            return new ResponseEntity<>(maintenanceRequestDetail, HttpStatus.ACCEPTED);
+        } catch (ResourceNotFoundException e) {
+            // Handle the exception and return an appropriate response
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity delete(@PathVariable("id") Long id){
-        maintenanceRequestService.delete(id);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
-    }
-}
-
-
+        try {
+            maintenanceRequestService.delete(id);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }catch(ResourceNotFoundException e){
+                // Handle the exception and return an appropriate response
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            }
+        }
